@@ -1,4 +1,5 @@
 const MAIN_DATA_URL = "dataThamKhao/json/data.json";
+const MERGER_DATA_URL = "dataThamKhao/json/data-new.json";
 const ADMIN_PROVINCE_URL = "data/tinh.json";
 const ADMIN_DISTRICT_URL = "data/huyen.json";
 const ADMIN_WARD_URL = "data/xa.json";
@@ -11,6 +12,8 @@ let wardByCode = new Map();
 
 let currentProvinceCode = "";
 let isMainDataLoaded = false;
+let mergerByWardCode = new Map();
+let isMergerDataLoaded = false;
 
 let adminProvinces = [];
 let adminDistricts = [];

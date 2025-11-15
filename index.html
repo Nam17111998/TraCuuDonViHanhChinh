@@ -20,7 +20,7 @@
       Đơn vị hành chính Việt Nam
     </h1>
     <p class="header-desc">
-      Tra cứu nhanh Tỉnh/Thành phố - Xã/Phường và xem bản đồ.
+      Tra cứu nhanh Tỉnh/Thành phố – Xã/Phường và xem bản đồ.
     </p>
   </div>
 
@@ -35,6 +35,34 @@
       >
         <i class="fa-solid fa-moon" id="themeIcon"></i>
       </button>
+
+      <h2 class="header-subtitle">
+        <i class="fa-solid fa-magnifying-glass-location"></i>
+        Tra cứu theo tên hoặc chọn tỉnh
+      </h2>
+      <p class="subtitle">
+        Nhập tên Tỉnh/Thành, Xã/Phường (không phân biệt hoa/thường, dấu) hoặc chọn theo danh sách.
+      </p>
+
+      <div class="search-box">
+        <div class="search-with-suggestions">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Ví dụ: Hà Nội, Quận 1, Phường Bến Nghé..."
+            autocomplete="off"
+          />
+          <button
+            id="clearBtn"
+            type="button"
+            class="clear-btn"
+            aria-label="Xóa tìm kiếm"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <ul id="suggestionList" class="suggestion-list"></ul>
+        </div>
+      </div>
 
       <p id="statusMessage" class="status">
         Đang tải dữ liệu, vui lòng chờ...
@@ -62,6 +90,7 @@
           </select>
         </div>
       </section>
+
       <section class="stats">
         <div class="stat-item">
           <i class="fa-solid fa-city stat-icon"></i>
@@ -122,6 +151,17 @@
               <i class="fa-solid fa-copy"></i>
             </button>
           </p>
+          <div class="merge-box" id="mergeBox" hidden>
+            <div class="merge-title">
+              <i class="fa-solid fa-layer-group"></i>
+              Thông tin sáp nhập
+            </div>
+            <div class="merge-body">
+              <div id="mergeSummary" class="merge-summary"></div>
+              <ul id="mergeOldUnits" class="merge-old-units"></ul>
+              <div id="mergeExtra" class="merge-extra"></div>
+            </div>
+          </div>
           <div class="map-box">
             <div class="map-title">
               <i class="fa-solid fa-map-location-dot"></i>
@@ -142,6 +182,7 @@
   </div>
 
   <script src="app.js"></script>
+  <script src="merge-feature.js"></script>
+  <script src="convert-from-main.js"></script>
 </body>
 </html>
-
