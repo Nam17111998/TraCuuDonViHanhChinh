@@ -49,7 +49,7 @@
           <input
             id="searchInput"
             type="search"
-            placeholder="Ví dụ: Hà Nội, Quận 1, Phường Bến Nghé..."
+            placeholder="Ví dụ: Hà Nội, Phường Bến Nghé..."
             autocomplete="off"
           />
           <button
@@ -110,7 +110,7 @@
       </section>
 
       <section class="results-layout">
-        <div class="results" id="results">
+        <!-- <div class="results" id="results">
           <section class="result-group">
             <h2>Kết quả Tỉnh / Thành phố</h2>
             <ul id="provinceResults" class="result-list"></ul>
@@ -120,7 +120,7 @@
             <h2>Kết quả Xã / Phường / Thị trấn</h2>
             <ul id="wardResults" class="result-list"></ul>
           </section>
-        </div>
+        </div> -->
 
         <aside class="info-panel" id="selectedInfo" hidden>
           <h2>
@@ -138,6 +138,42 @@
           <p>
             <span class="info-label">Mã Xã/Phường:</span>
             <span id="selectedWardCode" class="info-value"></span>
+          </p>
+            <p>
+            <span class="info-label">Trụ sở hành chính:</span>
+            <span id="adminCenterAddress" class="info-value"></span>
+            <button
+              id="showAdminCenterBtn"
+              type="button"
+              class="copy-btn"
+              aria-label="Xem trụ sở hành chính trên bản đồ ""
+            >
+              <i class="fa-solid fa-location-crosshairs"></i>
+            </button>
+          </p>
+          <p>
+            <span class="info-label">Quy mô:</span>
+            <span id="provinceScale" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Số đơn vị cấp xã:</span>
+            <span id="provinceTotalUnits" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Diện tích:</span>
+            <span id="provinceArea" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Mã bưu điện:</span>
+            <span id="provincePostalCode" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Mã biển số xe:</span>
+            <span id="provinceVehicleCode" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Mã điện thoại:</span>
+            <span id="provincePhoneCode" class="info-value"></span>
           </p>
           <p>
             <span class="info-label">Địa chỉ chuẩn:</span>
@@ -177,12 +213,14 @@
             </div>
           </div>
         </aside>
-      </section>
+      </section>  
     </main>
   </div>
 
   <script src="app.js"></script>
   <script src="merge-feature.js"></script>
   <script src="convert-from-main.js"></script>
+  <script src="admin-center.js"></script>
 </body>
 </html>
+
