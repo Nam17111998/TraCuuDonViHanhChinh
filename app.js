@@ -23,6 +23,7 @@ let adminDistrictsByProvince = new Map();
 let adminWardsByDistrict = new Map();
 let adminWardByCode = new Map();
 let isAdminDataLoaded = false;
+let currentProvinceIntroName = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const convertWardSelect = document.getElementById("convertWardSelect");
   const convertFromOldBtn = document.getElementById("convertFromOldBtn");
   const copyAddressBtn = document.getElementById("copyAddressBtn");
+  const openSpecialtyBtn = document.getElementById("openSpecialtyBtn");
   const themeToggle = document.getElementById("themeToggle");
   const themeIcon = document.getElementById("themeIcon");
 
@@ -113,6 +115,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     searchInput.addEventListener("blur", () => {
       setTimeout(() => hideSuggestions(suggestionList), 150);
+    });
+  }
+
+  if (openSpecialtyBtn) {
+    openSpecialtyBtn.addEventListener("click", () => {
+      const provinceEl = document.getElementById("selectedProvince");
+      if (!provinceEl) return;
+      const name = (provinceEl.textContent || "").trim();
+      if (!name) return;
+      const q = `đặc sản ${name}`;
+      const url =
+        "https://www.google.com/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
     });
   }
 
@@ -1067,8 +1082,72 @@ function updateSelectedInfo(provinceName, wardName, wardCode) {
   }
 
   selectedInfo.hidden = false;
+
+  if (provinceName && provinceName.trim()) {
+    loadProvinceIntro(provinceName.trim());
+  } else {
+    loadProvinceIntro("");
+  }
 }
 
 function clearSelection() {
   updateSelectedInfo("", "", "");
+}
+
+async function loadProvinceIntro(provinceName) {
+  const introEl = document.getElementById("provinceIntro");
+  const thumbEl = document.getElementById("provinceThumbnail");
+  if (!introEl) return;
+
+  if (!provinceName || !provinceName.trim()) {
+    introEl.textContent = "";
+    if (thumbEl) {
+      thumbEl.src = "";
+      thumbEl.alt = "";
+      thumbEl.style.display = "none";
+    }
+    currentProvinceIntroName = "";
+    return;
+  }
+
+  const name = provinceName.trim();
+  if (name === currentProvinceIntroName) {
+    return;
+  }
+  currentProvinceIntroName = name;
+
+  if (thumbEl) {
+    thumbEl.src = "";
+    thumbEl.alt = "";
+    thumbEl.style.display = "none";
+  }
+
+  introEl.textContent = "Đang tải giới thiệu...";
+
+  const title = name.replace(/\s+/g, "_");
+  const url =
+    "https://vi.wikipedia.org/api/rest_v1/page/summary/" +
+    encodeURIComponent(title);
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      introEl.textContent = "Không tìm thấy giới thiệu";
+      return;
+    }
+
+    const data = await res.json();
+    const extract = data && (data.extract || data.description || "");
+    introEl.textContent =
+      (extract && String(extract).trim()) || "Không tìm thấy giới thiệu";
+
+    if (thumbEl && data && data.thumbnail && data.thumbnail.source) {
+      thumbEl.src = data.thumbnail.source;
+      thumbEl.alt = data.title || name;
+      thumbEl.style.display = "block";
+    }
+  } catch (error) {
+    console.error("Loi tai gioi thieu Wikipedia:", error);
+    introEl.textContent = "Không tải được giới thiệu";
+  }
 }

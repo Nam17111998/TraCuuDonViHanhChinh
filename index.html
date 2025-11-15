@@ -110,26 +110,38 @@
       </section>
 
       <section class="results-layout">
-        <!-- <div class="results" id="results">
-          <section class="result-group">
-            <h2>Kết quả Tỉnh / Thành phố</h2>
-            <ul id="provinceResults" class="result-list"></ul>
-          </section>
-
-          <section class="result-group">
-            <h2>Kết quả Xã / Phường / Thị trấn</h2>
-            <ul id="wardResults" class="result-list"></ul>
-          </section>
-        </div> -->
 
         <aside class="info-panel" id="selectedInfo" hidden>
           <h2>
             <i class="fa-solid fa-circle-info"></i>
             Thông tin địa chỉ đã chọn
           </h2>
+            <div class="wiki-box">
+            <div class="wiki-title">
+              <i class="fa-brands fa-wikipedia-w"></i>
+              Giới thiệu về tỉnh thành (Wikipedia)
+            </div>
+            <div class="wiki-body">
+              <img
+                id="provinceThumbnail"
+                class="wiki-thumb"
+                alt=""
+                loading="lazy"
+              />
+              <p id="provinceIntro" class="wiki-intro"></p>
+            </div>
+          </div>
           <p>
             <span class="info-label">Tỉnh/Thành:</span>
             <span id="selectedProvince" class="info-value"></span>
+                             <button
+              id="openSpecialtyBtn"
+              type="button"
+              class="copy-btn"
+              aria-label="Tìm kiếm"
+            >
+              <i class="fa-solid fa-utensils"></i>
+            </button>
           </p>
           <p>
             <span class="info-label">Xã/Phường:</span>
@@ -175,6 +187,7 @@
             <span class="info-label">Mã điện thoại:</span>
             <span id="provincePhoneCode" class="info-value"></span>
           </p>
+          
           <p>
             <span class="info-label">Địa chỉ chuẩn:</span>
             <span id="selectedAddress" class="info-value"></span>

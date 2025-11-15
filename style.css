@@ -554,6 +554,47 @@ body.light-mode {
   border: 0;
 }
 
+.wiki-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.wiki-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.wiki-title i {
+  color: #111827;
+}
+
+.wiki-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wiki-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: none;
+}
+
+.wiki-intro {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
 .footer {
   margin-top: 24px;
   font-size: 0.85rem;
