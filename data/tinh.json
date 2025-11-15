@@ -1,0 +1,21 @@
+[
+  {
+    "code": "01",
+    "name": "Thành phố Hà Nội",
+    "short_name": "Hà Nội",
+    "type": "Thành phố trực thuộc trung ương"
+  },
+  {
+    "code": "79",
+    "name": "Thành phố Hồ Chí Minh",
+    "short_name": "TP Hồ Chí Minh",
+    "type": "Thành phố trực thuộc trung ương"
+  },
+  {
+    "code": "48",
+    "name": "Thành phố Đà Nẵng",
+    "short_name": "Đà Nẵng",
+    "type": "Thành phố trực thuộc trung ương"
+  }
+]
+

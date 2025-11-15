@@ -1,0 +1,45 @@
+[
+  {
+    "code": "00001",
+    "name": "Phường Phúc Xá",
+    "short_name": "Phúc Xá",
+    "type": "Phường",
+    "parent_code": "001"
+  },
+  {
+    "code": "00004",
+    "name": "Phường Trúc Bạch",
+    "short_name": "Trúc Bạch",
+    "type": "Phường",
+    "parent_code": "001"
+  },
+  {
+    "code": "00006",
+    "name": "Phường Vĩnh Phúc",
+    "short_name": "Vĩnh Phúc",
+    "type": "Phường",
+    "parent_code": "001"
+  },
+  {
+    "code": "26734",
+    "name": "Phường Bến Nghé",
+    "short_name": "Bến Nghé",
+    "type": "Phường",
+    "parent_code": "760"
+  },
+  {
+    "code": "26737",
+    "name": "Phường Bến Thành",
+    "short_name": "Bến Thành",
+    "type": "Phường",
+    "parent_code": "760"
+  },
+  {
+    "code": "20194",
+    "name": "Phường Bình Thuận",
+    "short_name": "Bình Thuận",
+    "type": "Phường",
+    "parent_code": "490"
+  }
+]
+

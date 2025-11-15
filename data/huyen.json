@@ -1,0 +1,38 @@
+[
+  {
+    "code": "001",
+    "name": "Quận Ba Đình",
+    "short_name": "Ba Đình",
+    "type": "Quận",
+    "parent_code": "01"
+  },
+  {
+    "code": "002",
+    "name": "Quận Hoàn Kiếm",
+    "short_name": "Hoàn Kiếm",
+    "type": "Quận",
+    "parent_code": "01"
+  },
+  {
+    "code": "760",
+    "name": "Quận 1",
+    "short_name": "Quận 1",
+    "type": "Quận",
+    "parent_code": "79"
+  },
+  {
+    "code": "761",
+    "name": "Quận 12",
+    "short_name": "Quận 12",
+    "type": "Quận",
+    "parent_code": "79"
+  },
+  {
+    "code": "490",
+    "name": "Quận Hải Châu",
+    "short_name": "Hải Châu",
+    "type": "Quận",
+    "parent_code": "48"
+  }
+]
+

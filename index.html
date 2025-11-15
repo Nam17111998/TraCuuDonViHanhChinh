@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tra cứu đơn vị hành chính Việt Nam (2 cấp)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>Tra cứu đơn vị hành chính Việt Nam</h1>
+      <p class="subtitle">
+        Nhập tên tỉnh/thành hoặc xã/phường (không phân biệt hoa thường, dấu tiếng Việt).
+      </p>
+
+      <div class="search-box">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Ví dụ: Ha Noi, Quan 1, Phuong Ben Nghe..."
+          autocomplete="off"
+        />
+      </div>
+
+      <p id="statusMessage" class="status">
+        Đang tải dữ liệu, vui lòng chờ...
+      </p>
+    </header>
+
+    <main class="content">
+      <div class="results" id="results">
+        <section class="result-group">
+          <h2>Tỉnh / Thành phố</h2>
+          <ul id="provinceResults" class="result-list"></ul>
+        </section>
+
+        <section class="result-group">
+          <h2>Xã / Phường / Thị trấn</h2>
+          <ul id="wardResults" class="result-list"></ul>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Dữ liệu đầy đủ 2 cấp (tỉnh/thành, xã/phường) tham khảo từ thư mục
+        <code>dataThamKhao/json</code>. Khi đẩy lên GitHub, giữ nguyên cấu trúc thư mục để tra cứu hoạt động.
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
