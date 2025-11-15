@@ -43,6 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const convertFromOldBtn = document.getElementById("convertFromOldBtn");
   const copyAddressBtn = document.getElementById("copyAddressBtn");
   const openSpecialtyBtn = document.getElementById("openSpecialtyBtn");
+  const openWikiBtn = document.getElementById("openWikiBtn");
+  const donateBtn = document.getElementById("donateBtn");
+  const donateModal = document.getElementById("donateModal");
+  const donateBackdrop = document.getElementById("donateBackdrop");
+  const donateClose = document.getElementById("donateClose");
   const themeToggle = document.getElementById("themeToggle");
   const themeIcon = document.getElementById("themeIcon");
 
@@ -130,6 +135,52 @@ document.addEventListener("DOMContentLoaded", () => {
       window.open(url, "_blank");
     });
   }
+
+  if (openWikiBtn) {
+    openWikiBtn.addEventListener("click", () => {
+      const fallback =
+        (document.getElementById("selectedProvince")?.textContent || "").trim();
+      const name =
+        (typeof currentProvinceIntroName === "string" &&
+          currentProvinceIntroName.trim()) ||
+        fallback;
+      if (!name) return;
+      const title = name.replace(/\s+/g, "_");
+      const url =
+        "https://vi.wikipedia.org/wiki/" + encodeURIComponent(title);
+      window.open(url, "_blank");
+    });
+  }
+
+  function openDonate() {
+    if (donateModal) {
+      donateModal.hidden = false;
+    }
+  }
+
+  function closeDonate() {
+    if (donateModal) {
+      donateModal.hidden = true;
+    }
+  }
+
+  if (donateBtn && donateModal) {
+    donateBtn.addEventListener("click", openDonate);
+  }
+
+  if (donateBackdrop) {
+    donateBackdrop.addEventListener("click", closeDonate);
+  }
+
+  if (donateClose) {
+    donateClose.addEventListener("click", closeDonate);
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeDonate();
+    }
+  });
 
   if (provinceSelect) {
     provinceSelect.addEventListener("change", () => {
@@ -364,14 +415,11 @@ async function loadAdminData() {
 
   if (Array.isArray(pRaw)) {
     pRaw.forEach((p) => {
-      const code = String(p.code || "").trim();
-      if (!code) return;
-      const province = {
-        code,
-        name: p.name || "",
-        shortName: p.short_name || p.name || "",
-        type: p.type || "",
-      };
+      const code = String(p.code || p.ma || p.ma_tinh || "").trim();
+      const name = p.name || p.ten || "";
+      if (!code || !name) return;
+
+      const province = { code, name };
       adminProvinces.push(province);
       adminProvinceByCode.set(code, province);
     });
@@ -379,21 +427,20 @@ async function loadAdminData() {
 
   if (Array.isArray(dRaw)) {
     dRaw.forEach((d) => {
-      const code = String(d.code || "").trim();
-      const parent = String(d.parent_code || "").trim();
-      if (!code || !parent) return;
-      const district = {
-        code,
-        name: d.name || "",
-        shortName: d.short_name || d.name || "",
-        type: d.type || "",
-        provinceCode: parent,
-      };
+      const code = String(d.code || d.ma || d.ma_huyen || "").trim();
+      const name = d.name || d.ten || "";
+      const provinceCode = String(
+        d.province_code || d.ma_tinh || ""
+      ).trim();
+      if (!code || !name || !provinceCode) return;
+
+      const district = { code, name, provinceCode };
       adminDistricts.push(district);
-      let list = adminDistrictsByProvince.get(parent);
+
+      let list = adminDistrictsByProvince.get(provinceCode);
       if (!list) {
         list = [];
-        adminDistrictsByProvince.set(parent, list);
+        adminDistrictsByProvince.set(provinceCode, list);
       }
       list.push(district);
     });
@@ -401,26 +448,40 @@ async function loadAdminData() {
 
   if (Array.isArray(wRaw)) {
     wRaw.forEach((w) => {
-      const code = String(w.code || "").trim();
-      const parent = String(w.parent_code || "").trim();
-      if (!code || !parent) return;
-      const ward = {
-        code,
-        name: w.name || "",
-        shortName: w.short_name || w.name || "",
-        type: w.type || "",
-        districtCode: parent,
-      };
+      const code = String(w.code || w.ma || w.ma_xa || "").trim();
+      const name = w.name || w.ten || "";
+      const districtCode = String(
+        w.district_code || w.ma_huyen || ""
+      ).trim();
+      if (!code || !name || !districtCode) return;
+
+      const ward = { code, name, districtCode };
       adminWards.push(ward);
       adminWardByCode.set(code, ward);
-      let list = adminWardsByDistrict.get(parent);
+
+      let list = adminWardsByDistrict.get(districtCode);
       if (!list) {
         list = [];
-        adminWardsByDistrict.set(parent, list);
+        adminWardsByDistrict.set(districtCode, list);
       }
       list.push(ward);
     });
   }
+}
+
+function searchAll(query) {
+  const q = normalizeText(query);
+  if (!q) return { provinces: [], wards: [] };
+
+  const provinceMatches = provinces.filter((p) =>
+    normalizeText(p.name).includes(q)
+  );
+
+  const wardMatches = wards.filter((w) =>
+    normalizeText(w.name).includes(q)
+  );
+
+  return { provinces: provinceMatches, wards: wardMatches };
 }
 
 function normalizeText(str) {
@@ -431,292 +492,151 @@ function normalizeText(str) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/đ/g, "d")
     .replace(/Đ/g, "d")
-    .toLowerCase();
+    .toLowerCase()
+    .trim();
 }
 
-function searchCollection(items, rawQuery, fields) {
-  const query = normalizeText(rawQuery);
-  if (!query) return [];
+function renderResults(results) {
+  const provinceList = document.getElementById("provinceResults");
+  const wardList = document.getElementById("wardResults");
+  if (!provinceList || !wardList) return;
 
-  return items.filter((item) => {
-    const combined = fields
-      .map((field) => normalizeText(item[field] || ""))
-      .join(" ");
-    return combined.includes(query);
+  provinceList.innerHTML = "";
+  wardList.innerHTML = "";
+
+  results.provinces.forEach((p) => {
+    const li = document.createElement("li");
+    li.textContent = p.name;
+    li.addEventListener("click", () => {
+      selectProvinceFromResult(p);
+    });
+    provinceList.appendChild(li);
   });
-}
 
-function searchAll(rawQuery) {
-  const provincePool = currentProvinceCode
-    ? provinces.filter((p) => p.code === currentProvinceCode)
-    : provinces;
-
-  const wardPool = currentProvinceCode
-    ? wardsByProvince.get(currentProvinceCode) || []
-    : wards;
-
-  const provinceResults = searchCollection(provincePool, rawQuery, [
-    "name",
-    "shortName",
-  ]);
-  const wardResults = searchCollection(wardPool, rawQuery, ["name"]);
-
-  return { provinceResults, wardResults };
+  results.wards.forEach((w) => {
+    const li = document.createElement("li");
+    li.textContent = w.name;
+    li.addEventListener("click", () => {
+      selectWardFromResult(w);
+    });
+    wardList.appendChild(li);
+  });
 }
 
 function clearResults() {
   const provinceList = document.getElementById("provinceResults");
   const wardList = document.getElementById("wardResults");
-
   if (provinceList) provinceList.innerHTML = "";
   if (wardList) wardList.innerHTML = "";
 }
 
-function renderResults(results) {
-  clearResults();
-
-  const provinceList = document.getElementById("provinceResults");
-  const wardList = document.getElementById("wardResults");
-  const statusMessage = document.getElementById("statusMessage");
-
-  if (!provinceList || !wardList) return;
-
-  const { provinceResults, wardResults } = results;
-
-  if (statusMessage) {
-    if (!provinceResults.length && !wardResults.length) {
-      statusMessage.textContent = "Không tìm thấy kết quả phù hợp.";
-    } else {
-      statusMessage.textContent = `Tìm thấy ${provinceResults.length} tỉnh/thành và ${wardResults.length} xã/phường.`;
-    }
+function hideSuggestions(list) {
+  const ul = list || document.getElementById("suggestionList");
+  if (ul) {
+    ul.style.display = "none";
+    ul.innerHTML = "";
   }
-
-  provinceResults.forEach((p) => {
-    const label = p.shortName || p.name;
-    const hierarchy = p.type || "Tỉnh / Thành phố";
-    provinceList.appendChild(createResultItem(label, hierarchy));
-  });
-
-  wardResults.forEach((w) => {
-    const province = w.provinceCode
-      ? provinceByCode.get(w.provinceCode)
-      : null;
-
-    const provinceName = province ? province.shortName || province.name : "";
-    const label = w.name || "";
-
-    const hierarchy = provinceName
-      ? `Xã/Phường - ${provinceName}`
-      : "Xã/Phường";
-
-    wardList.appendChild(createResultItem(label, hierarchy));
-  });
-}
-
-function createResultItem(label, hierarchy) {
-  const li = document.createElement("li");
-  li.className = "result-item";
-
-  const main = document.createElement("div");
-  main.className = "result-main";
-  main.textContent = label;
-  li.appendChild(main);
-
-  if (hierarchy) {
-    const sub = document.createElement("div");
-    sub.className = "result-sub";
-    sub.textContent = hierarchy;
-    li.appendChild(sub);
-  }
-
-  return li;
 }
 
 function buildSuggestions(results, suggestionList) {
-  const listElement =
-    suggestionList || document.getElementById("suggestionList");
-  if (!listElement) return;
+  if (!suggestionList) return;
+  suggestionList.innerHTML = "";
 
   const items = [];
-
-  results.provinceResults.slice(0, 5).forEach((p) => {
-    items.push({
-      type: "province",
-      code: p.code,
-      label: p.name,
-    });
+  results.provinces.forEach((p) => {
+    items.push({ type: "province", name: p.name });
   });
-
-  results.wardResults.slice(0, 15).forEach((w) => {
-    items.push({
-      type: "ward",
-      code: w.code,
-      provinceCode: w.provinceCode,
-      label: w.name,
-    });
+  results.wards.forEach((w) => {
+    items.push({ type: "ward", name: w.name });
   });
 
   if (!items.length) {
-    hideSuggestions(listElement);
+    suggestionList.style.display = "none";
     return;
   }
 
-  listElement.innerHTML = "";
-
-  items.forEach((item) => {
+  items.slice(0, 10).forEach((item) => {
     const li = document.createElement("li");
     li.className = "suggestion-item";
-    li.dataset.type = item.type;
-    li.dataset.code = item.code || "";
-    if (item.provinceCode) {
-      li.dataset.provinceCode = item.provinceCode;
-    }
 
     const main = document.createElement("div");
     main.className = "suggestion-main";
 
     const title = document.createElement("div");
     title.className = "suggestion-title";
-    title.textContent = item.label;
-    main.appendChild(title);
+    title.textContent = item.name;
 
-    if (item.type === "ward") {
-      const province =
-        item.provinceCode && provinceByCode.get(item.provinceCode);
-      if (province) {
-        const sub = document.createElement("div");
-        sub.className = "suggestion-sub";
-        sub.textContent = province.name;
-        main.appendChild(sub);
-      }
-    }
+    const sub = document.createElement("div");
+    sub.className = "suggestion-sub";
+    sub.textContent =
+      item.type === "province"
+        ? "Tỉnh/Thành"
+        : "Xã/Phường";
+
+    main.appendChild(title);
+    main.appendChild(sub);
+
+    const typeLabel = document.createElement("div");
+    typeLabel.className = "suggestion-type-label " + item.type;
+    typeLabel.textContent =
+      item.type === "province" ? "Tỉnh/Thành" : "Xã/Phường";
 
     li.appendChild(main);
-
-    const typeLabel = document.createElement("span");
-    typeLabel.className = `suggestion-type-label ${item.type}`;
-    typeLabel.textContent =
-      item.type === "province" ? "Tỉnh/TP" : "Xã/Phường";
     li.appendChild(typeLabel);
 
-    li.addEventListener("mousedown", (event) => {
-      event.preventDefault();
-      applySuggestionSelection(item);
+    li.addEventListener("click", () => {
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.value = item.name;
+      }
+      const results = searchAll(item.name);
+      renderResults(results);
+      hideSuggestions(suggestionList);
     });
 
-    listElement.appendChild(li);
+    suggestionList.appendChild(li);
   });
 
-  listElement.style.display = "block";
-}
-
-function hideSuggestions(suggestionList) {
-  const listElement =
-    suggestionList || document.getElementById("suggestionList");
-  if (!listElement) return;
-
-  listElement.innerHTML = "";
-  listElement.style.display = "none";
-}
-
-function applySuggestionSelection(item) {
-  const provinceSelect = document.getElementById("provinceSelect");
-  const wardSelect = document.getElementById("wardSelect");
-  const searchInput = document.getElementById("searchInput");
-
-  if (item.type === "province") {
-    currentProvinceCode = item.code || "";
-
-    if (provinceSelect) {
-      provinceSelect.value = currentProvinceCode;
-    }
-
-    populateWardSelectForProvince(currentProvinceCode, wardSelect);
-    updateStatsForProvince(currentProvinceCode);
-
-    const province =
-      currentProvinceCode && provinceByCode.get(currentProvinceCode);
-    const provinceName = province ? province.name : "";
-
-    updateSelectedInfo(provinceName, "", "");
-
-    if (searchInput) {
-      searchInput.value = item.label || "";
-      const results = searchAll(item.label || "");
-      renderResults(results);
-    }
-  } else if (item.type === "ward") {
-    const provinceCode = item.provinceCode || "";
-    currentProvinceCode = provinceCode;
-
-    if (provinceSelect) {
-      provinceSelect.value = provinceCode;
-    }
-
-    populateWardSelectForProvince(provinceCode, wardSelect);
-    updateStatsForProvince(provinceCode);
-
-    if (wardSelect) {
-      wardSelect.value = item.code || "";
-    }
-
-    const province = provinceCode ? provinceByCode.get(provinceCode) : null;
-    const provinceName = province ? province.name : "";
-    const wardName = item.label || "";
-    const wardCode = item.code || "";
-
-    updateSelectedInfo(provinceName, wardName, wardCode);
-
-    if (searchInput) {
-      searchInput.value = wardName;
-      const results = searchAll(wardName);
-      renderResults(results);
-    }
-  }
-
-  hideSuggestions();
+  suggestionList.style.display = "block";
 }
 
 function onProvinceChange(provinceSelect, wardSelect) {
-  if (!isMainDataLoaded) return;
+  const code = provinceSelect.value || "";
+  currentProvinceCode = code;
+  populateWardSelectForProvince(code, wardSelect);
+  updateStatsForProvince(code);
 
-  const provinceCode = provinceSelect ? provinceSelect.value || "" : "";
-  currentProvinceCode = provinceCode;
-
-  populateWardSelectForProvince(provinceCode, wardSelect);
-  updateStatsForProvince(provinceCode);
-
-  const province = provinceCode ? provinceByCode.get(provinceCode) : null;
+  const province = provinceByCode.get(code);
   const provinceName = province ? province.name : "";
 
   updateSelectedInfo(provinceName, "", "");
 
   const searchInput = document.getElementById("searchInput");
-  const query = searchInput ? searchInput.value.trim() : "";
-  if (query) {
-    const results = searchAll(query);
+  if (searchInput && provinceName) {
+    searchInput.value = provinceName;
+    const results = searchAll(provinceName);
     renderResults(results);
-  } else {
-    clearResults();
   }
 }
 
 function onWardChange(wardSelect, provinceSelect) {
-  if (!isMainDataLoaded) return;
-
-  const wardCode = wardSelect ? wardSelect.value || "" : "";
-  const provinceCode =
-    currentProvinceCode || (provinceSelect ? provinceSelect.value || "" : "");
-
-  if (!provinceCode && !wardCode) {
-    clearSelection();
+  const wardCode = wardSelect.value || "";
+  if (!wardCode) {
+    const provinceCode = provinceSelect ? provinceSelect.value || "" : "";
+    const province =
+      provinceCode && provinceByCode.get(provinceCode);
+    const provinceName = province ? province.name : "";
+    updateSelectedInfo(provinceName, "", "");
     return;
   }
 
-  const province = provinceCode ? provinceByCode.get(provinceCode) : null;
-  const list = provinceCode ? wardsByProvince.get(provinceCode) || [] : wards;
-  const ward = wardCode ? list.find((w) => w.code === wardCode) : null;
+  const ward = wardByCode.get(wardCode);
+  if (!ward) {
+    return;
+  }
 
+  const province =
+    ward.provinceCode && provinceByCode.get(ward.provinceCode);
   const provinceName = province ? province.name : "";
   const wardName = ward ? ward.name : "";
   const finalWardCode = ward ? ward.code : wardCode;

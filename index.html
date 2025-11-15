@@ -11,6 +11,12 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -20,7 +26,7 @@
       Đơn vị hành chính Việt Nam
     </h1>
     <p class="header-desc">
-      Tra cứu nhanh Tỉnh/Thành phố – Xã/Phường và xem bản đồ.
+      Tra cứu nhanh Tỉnh/Thành phố – Xã/Phường và xem bản đồ, thông tin chi tiết.
     </p>
   </div>
 
@@ -116,10 +122,49 @@
             <i class="fa-solid fa-circle-info"></i>
             Thông tin địa chỉ đã chọn
           </h2>
-            <div class="wiki-box">
+
+          <p>
+            <span class="info-label">Tỉnh/Thành:</span>
+            <span id="selectedProvince" class="info-value"></span>
+            <button
+              id="openSpecialtyBtn"
+              type="button"
+              class="copy-btn"
+              aria-label="Tìm kiếm đặc sản tỉnh này"
+            >
+              <i class="fa-solid fa-utensils"></i>
+            </button>
+          </p>
+
+          <div class="weather-box">
+            <div class="weather-title">
+              <i class="fa-solid fa-cloud-sun"></i>
+              Thời tiết hôm nay
+            </div>
+            <p id="provinceWeather" class="weather-body"></p>
+          </div>
+
+          <div class="holiday-box">
+            <div class="holiday-title">
+              <i class="fa-solid fa-flag"></i>
+              Ngày nghỉ lễ toàn quốc
+            </div>
+            <p id="provinceHolidays" class="holiday-body"></p>
+            <ul id="holidayList" class="holiday-list" hidden></ul>
+          </div>
+
+          <div class="wiki-box">
             <div class="wiki-title">
               <i class="fa-brands fa-wikipedia-w"></i>
-              Giới thiệu về tỉnh thành (Wikipedia)
+              Giới thiệu về tỉnh/thành (Wikipedia)
+              <button
+                id="openWikiBtn"
+                type="button"
+                class="copy-btn"
+                aria-label="Mở bài Wikipedia chi tiết"
+              >
+                <i class="fa-solid fa-up-right-from-square"></i>
+              </button>
             </div>
             <div class="wiki-body">
               <img
@@ -131,18 +176,7 @@
               <p id="provinceIntro" class="wiki-intro"></p>
             </div>
           </div>
-          <p>
-            <span class="info-label">Tỉnh/Thành:</span>
-            <span id="selectedProvince" class="info-value"></span>
-                             <button
-              id="openSpecialtyBtn"
-              type="button"
-              class="copy-btn"
-              aria-label="Tìm kiếm"
-            >
-              <i class="fa-solid fa-utensils"></i>
-            </button>
-          </p>
+
           <p>
             <span class="info-label">Xã/Phường:</span>
             <span id="selectedWard" class="info-value"></span>
@@ -151,14 +185,14 @@
             <span class="info-label">Mã Xã/Phường:</span>
             <span id="selectedWardCode" class="info-value"></span>
           </p>
-            <p>
+          <p>
             <span class="info-label">Trụ sở hành chính:</span>
             <span id="adminCenterAddress" class="info-value"></span>
             <button
               id="showAdminCenterBtn"
               type="button"
               class="copy-btn"
-              aria-label="Xem trụ sở hành chính trên bản đồ ""
+              aria-label="Xem trụ sở hành chính trên bản đồ"
             >
               <i class="fa-solid fa-location-crosshairs"></i>
             </button>
@@ -187,7 +221,7 @@
             <span class="info-label">Mã điện thoại:</span>
             <span id="provincePhoneCode" class="info-value"></span>
           </p>
-          
+
           <p>
             <span class="info-label">Địa chỉ chuẩn:</span>
             <span id="selectedAddress" class="info-value"></span>
@@ -200,6 +234,7 @@
               <i class="fa-solid fa-copy"></i>
             </button>
           </p>
+
           <div class="merge-box" id="mergeBox" hidden>
             <div class="merge-title">
               <i class="fa-solid fa-layer-group"></i>
@@ -211,6 +246,7 @@
               <div id="mergeExtra" class="merge-extra"></div>
             </div>
           </div>
+
           <div class="map-box">
             <div class="map-title">
               <i class="fa-solid fa-map-location-dot"></i>
@@ -225,15 +261,71 @@
               ></iframe>
             </div>
           </div>
+
+          <!-- <div class="poi-box">
+            <div class="poi-title">
+              <i class="fa-solid fa-landmark"></i>
+              Địa điểm nổi bật (OpenStreetMap)
+            </div>
+            <div id="poiMap" class="poi-map"></div>
+            <ul id="poiList" class="poi-list"></ul>
+          </div> -->
         </aside>
-      </section>  
+      </section>
     </main>
+  </div>
+
+  <button
+    id="donateBtn"
+    class="donate-btn"
+    type="button"
+    aria-label="Ủng hộ tác giả"
+    title="Ủng hộ tác giả"
+  >
+    <i class="fa-solid fa-heart"></i>
+  </button>
+
+  <div id="donateModal" class="donate-modal" hidden>
+    <div id="donateBackdrop" class="donate-backdrop"></div>
+    <div class="donate-content" role="dialog" aria-modal="true" aria-labelledby="donateTitle">
+      <button id="donateClose" class="donate-close" type="button" aria-label="Đóng">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h2 id="donateTitle" class="donate-title">Ủng hộ / Donate</h2>
+      <p class="donate-desc">
+        Nếu bạn thấy công cụ này hữu ích, có thể ủng hộ tác giả qua chuyển khoản:
+      </p>
+      <div class="donate-info-row">
+        <span class="donate-info-label">Ngân hàng:</span>
+        <span>MB</span>
+      </div>
+      <div class="donate-info-row">
+        <span class="donate-info-label">Số tài khoản:</span>
+        <span>99868686688</span>
+      </div>
+      <div class="donate-info-row">
+        <span class="donate-info-label">Tên tài khoản:</span>
+        <span>NGUYEN MAU NAM</span>
+      </div>
+      <div class="donate-qr">
+        <div class="donate-info-label">QR Code:</div>
+        <img
+          src="donate-qr.jpg"
+          alt="Mã QR chuyển khoản"
+          onerror="this.style.display='none'"
+        />
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
   <script src="merge-feature.js"></script>
   <script src="convert-from-main.js"></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
   <script src="admin-center.js"></script>
 </body>
 </html>
-
