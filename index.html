@@ -2,25 +2,66 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Tra cứu đơn vị hành chính Việt Nam (2 cấp)</title>
+  <title>Tra cứu đơn vị hành chính Việt Nam</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="header-top">
+    <h1 class="header-title">
+      <i class="fa-solid fa-map-location-dot"></i>
+      Đơn vị hành chính Việt Nam
+    </h1>
+    <p class="header-desc">
+      Tra cứu nhanh Tỉnh/Thành phố – Quận/Huyện – Xã/Phường và xem bản đồ.
+    </p>
+  </div>
+
   <div class="page">
     <header class="header">
-      <h1>Tra cứu đơn vị hành chính Việt Nam</h1>
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        title="Chuyển chế độ sáng/tối"
+        aria-label="Chuyển chế độ sáng/tối"
+      >
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+      </button>
+
+      <h2 class="header-subtitle">
+        <i class="fa-solid fa-magnifying-glass-location"></i>
+        Tra cứu theo tên hoặc chọn tỉnh
+      </h2>
       <p class="subtitle">
-        Nhập tên tỉnh/thành hoặc xã/phường (không phân biệt hoa thường, dấu tiếng Việt).
+        Nhập tên Tỉnh/Thành, Quận/Huyện hoặc Xã/Phường (không phân biệt hoa/thường, dấu) hoặc chọn theo danh sách.
       </p>
 
       <div class="search-box">
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Ví dụ: Ha Noi, Quan 1, Phuong Ben Nghe..."
-          autocomplete="off"
-        />
+        <div class="search-with-suggestions">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Ví dụ: Hà Nội, Quận 1, Phường Bến Nghé..."
+            autocomplete="off"
+          />
+          <button
+            id="clearBtn"
+            type="button"
+            class="clear-btn"
+            aria-label="Xóa tìm kiếm"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <ul id="suggestionList" class="suggestion-list"></ul>
+        </div>
       </div>
 
       <p id="statusMessage" class="status">
@@ -29,25 +70,158 @@
     </header>
 
     <main class="content">
-      <div class="results" id="results">
-        <section class="result-group">
-          <h2>Tỉnh / Thành phố</h2>
-          <ul id="provinceResults" class="result-list"></ul>
-        </section>
+      <section class="controls">
+        <div class="field-group">
+          <label for="provinceSelect">
+            <i class="fa-solid fa-city"></i>
+            Tỉnh / Thành phố
+          </label>
+          <select id="provinceSelect">
+            <option value="">-- Chọn Tỉnh/Thành phố --</option>
+          </select>
+        </div>
 
-        <section class="result-group">
-          <h2>Xã / Phường / Thị trấn</h2>
-          <ul id="wardResults" class="result-list"></ul>
-        </section>
-      </div>
+        <!-- <div class="field-group">
+          <label for="districtSelect">
+            <i class="fa-solid fa-map"></i>
+            Quận / Huyện
+          </label>
+          <select id="districtSelect">
+            <option value="">-- Chọn Quận/Huyện --</option>
+          </select>
+        </div> -->
+
+        <div class="field-group">
+          <label for="wardSelect">
+            <i class="fa-solid fa-location-dot"></i>
+            Xã / Phường
+          </label>
+          <select id="wardSelect">
+            <option value="">-- Chọn Xã/Phường --</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- <section class="convert-box">
+        <h2 class="convert-title">
+          <i class="fa-solid fa-shuffle"></i>
+          Chọn địa chỉ theo 3 cấp (Tỉnh + Quận/Huyện + Xã/Phường)
+        </h2>
+        <p class="convert-desc">
+          Chọn lần lượt Tỉnh/Thành phố, sau đó Quận/Huyện và cuối cùng là Xã/Phường.
+          Kết quả sẽ hiển thị địa chỉ chuẩn ở đây và đồng bộ với phần bản đồ bên phải.
+          Dữ liệu mẫu lấy từ các file <code>data/tinh.json</code>, <code>data/huyen.json</code>, <code>data/xa.json</code>.
+        </p>
+        <div class="convert-grid">
+          <select id="convertProvinceSelect">
+            <option value="">-- Chọn Tỉnh/Thành phố --</option>
+          </select>
+          <select id="convertDistrictSelect">
+            <option value="">-- Chọn Quận/Huyện --</option>
+          </select>
+          <select id="convertWardSelect">
+            <option value="">-- Chọn Xã/Phường --</option>
+          </select>
+          <button
+            id="convertFromOldBtn"
+            type="button"
+            class="convert-btn"
+          >
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            Xem địa chỉ
+          </button>
+        </div>
+        <div id="convertResult" class="convert-result convert-result--empty">
+          Chưa có địa chỉ nào được chọn.
+        </div>
+      </section> -->
+
+      <section class="stats">
+        <div class="stat-item">
+          <i class="fa-solid fa-city stat-icon"></i>
+          <div class="stat-value" id="statProvinces">0</div>
+          <div class="stat-label">Tỉnh/Thành</div>
+        </div>
+        <div class="stat-item">
+          <i class="fa-solid fa-location-dot stat-icon"></i>
+          <div class="stat-value" id="statWards">0</div>
+          <div class="stat-label">Xã/Phường toàn quốc</div>
+        </div>
+        <div class="stat-item">
+          <i class="fa-solid fa-location-arrow stat-icon"></i>
+          <div class="stat-value" id="statCurrentWards">0</div>
+          <div class="stat-label">Xã/Phường của tỉnh đang chọn</div>
+        </div>
+      </section>
+
+      <section class="results-layout">
+        <div class="results" id="results">
+          <section class="result-group">
+            <h2>Kết quả Tỉnh / Thành phố</h2>
+            <ul id="provinceResults" class="result-list"></ul>
+          </section>
+
+          <section class="result-group">
+            <h2>Kết quả Xã / Phường / Thị trấn</h2>
+            <ul id="wardResults" class="result-list"></ul>
+          </section>
+        </div>
+
+        <aside class="info-panel" id="selectedInfo" hidden>
+          <h2>
+            <i class="fa-solid fa-circle-info"></i>
+            Thông tin địa chỉ đã chọn
+          </h2>
+          <p>
+            <span class="info-label">Tỉnh/Thành:</span>
+            <span id="selectedProvince" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Xã/Phường:</span>
+            <span id="selectedWard" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Mã Xã/Phường:</span>
+            <span id="selectedWardCode" class="info-value"></span>
+          </p>
+          <p>
+            <span class="info-label">Địa chỉ chuẩn:</span>
+            <span id="selectedAddress" class="info-value"></span>
+            <button
+              id="copyAddressBtn"
+              type="button"
+              class="copy-btn"
+              aria-label="Copy địa chỉ chuẩn"
+            >
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </p>
+          <div class="map-box">
+            <div class="map-title">
+              <i class="fa-solid fa-map-location-dot"></i>
+              Bản đồ
+            </div>
+            <div class="map-frame-wrapper">
+              <iframe
+                id="mapFrame"
+                class="map-frame"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </div>
+        </aside>
+      </section>
     </main>
 
-    <footer class="footer">
+    <!-- <footer class="footer">
       <p>
-        Dữ liệu đầy đủ 2 cấp (tỉnh/thành, xã/phường) tham khảo từ thư mục
-        <code>dataThamKhao/json</code>. Khi đẩy lên GitHub, giữ nguyên cấu trúc thư mục để tra cứu hoạt động.
+        Dữ liệu tìm kiếm chi tiết lấy từ
+        <code>dataThamKhao/json/data.json</code>. Dữ liệu mẫu 3 cấp (Tỉnh + Huyện + Xã)
+        dùng cho phần chọn địa chỉ trong thư mục <code>data/</code>. Khi thay bằng bộ dữ liệu đầy đủ,
+        chỉ cần giữ nguyên cấu trúc file và tên trường.
       </p>
-    </footer>
+    </footer> -->
   </div>
 
   <script src="app.js"></script>
