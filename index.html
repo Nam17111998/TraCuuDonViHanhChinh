@@ -20,7 +20,7 @@
       Đơn vị hành chính Việt Nam
     </h1>
     <p class="header-desc">
-      Tra cứu nhanh Tỉnh/Thành phố – Quận/Huyện – Xã/Phường và xem bản đồ.
+      Tra cứu nhanh Tỉnh/Thành phố - Xã/Phường và xem bản đồ.
     </p>
   </div>
 
@@ -35,34 +35,6 @@
       >
         <i class="fa-solid fa-moon" id="themeIcon"></i>
       </button>
-
-      <h2 class="header-subtitle">
-        <i class="fa-solid fa-magnifying-glass-location"></i>
-        Tra cứu theo tên hoặc chọn tỉnh
-      </h2>
-      <p class="subtitle">
-        Nhập tên Tỉnh/Thành, Quận/Huyện hoặc Xã/Phường (không phân biệt hoa/thường, dấu) hoặc chọn theo danh sách.
-      </p>
-
-      <div class="search-box">
-        <div class="search-with-suggestions">
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Ví dụ: Hà Nội, Quận 1, Phường Bến Nghé..."
-            autocomplete="off"
-          />
-          <button
-            id="clearBtn"
-            type="button"
-            class="clear-btn"
-            aria-label="Xóa tìm kiếm"
-          >
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <ul id="suggestionList" class="suggestion-list"></ul>
-        </div>
-      </div>
 
       <p id="statusMessage" class="status">
         Đang tải dữ liệu, vui lòng chờ...
@@ -80,17 +52,6 @@
             <option value="">-- Chọn Tỉnh/Thành phố --</option>
           </select>
         </div>
-
-        <!-- <div class="field-group">
-          <label for="districtSelect">
-            <i class="fa-solid fa-map"></i>
-            Quận / Huyện
-          </label>
-          <select id="districtSelect">
-            <option value="">-- Chọn Quận/Huyện --</option>
-          </select>
-        </div> -->
-
         <div class="field-group">
           <label for="wardSelect">
             <i class="fa-solid fa-location-dot"></i>
@@ -101,41 +62,6 @@
           </select>
         </div>
       </section>
-
-      <!-- <section class="convert-box">
-        <h2 class="convert-title">
-          <i class="fa-solid fa-shuffle"></i>
-          Chọn địa chỉ theo 3 cấp (Tỉnh + Quận/Huyện + Xã/Phường)
-        </h2>
-        <p class="convert-desc">
-          Chọn lần lượt Tỉnh/Thành phố, sau đó Quận/Huyện và cuối cùng là Xã/Phường.
-          Kết quả sẽ hiển thị địa chỉ chuẩn ở đây và đồng bộ với phần bản đồ bên phải.
-          Dữ liệu mẫu lấy từ các file <code>data/tinh.json</code>, <code>data/huyen.json</code>, <code>data/xa.json</code>.
-        </p>
-        <div class="convert-grid">
-          <select id="convertProvinceSelect">
-            <option value="">-- Chọn Tỉnh/Thành phố --</option>
-          </select>
-          <select id="convertDistrictSelect">
-            <option value="">-- Chọn Quận/Huyện --</option>
-          </select>
-          <select id="convertWardSelect">
-            <option value="">-- Chọn Xã/Phường --</option>
-          </select>
-          <button
-            id="convertFromOldBtn"
-            type="button"
-            class="convert-btn"
-          >
-            <i class="fa-solid fa-arrow-right-arrow-left"></i>
-            Xem địa chỉ
-          </button>
-        </div>
-        <div id="convertResult" class="convert-result convert-result--empty">
-          Chưa có địa chỉ nào được chọn.
-        </div>
-      </section> -->
-
       <section class="stats">
         <div class="stat-item">
           <i class="fa-solid fa-city stat-icon"></i>
@@ -213,15 +139,6 @@
         </aside>
       </section>
     </main>
-
-    <!-- <footer class="footer">
-      <p>
-        Dữ liệu tìm kiếm chi tiết lấy từ
-        <code>dataThamKhao/json/data.json</code>. Dữ liệu mẫu 3 cấp (Tỉnh + Huyện + Xã)
-        dùng cho phần chọn địa chỉ trong thư mục <code>data/</code>. Khi thay bằng bộ dữ liệu đầy đủ,
-        chỉ cần giữ nguyên cấu trúc file và tên trường.
-      </p>
-    </footer> -->
   </div>
 
   <script src="app.js"></script>
