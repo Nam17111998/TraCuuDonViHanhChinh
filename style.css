@@ -102,6 +102,43 @@ body.light-mode {
   font-size: 16px;
 }
 
+.coupon-toggle {
+  position: absolute;
+  top: 8px;
+  right: 52px;
+  border: none;
+  border-radius: 999px;
+  padding: 0 12px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #e5e7eb;
+  color: #374151;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+  transition: background 0.2s, color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.coupon-toggle:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+
+.coupon-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.udemy-alias {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
 .header-subtitle {
   margin: 0 0 6px;
   font-size: 1.2rem;
@@ -376,6 +413,7 @@ body.light-mode {
   color: var(--color-text-muted);
 }
 
+/* .results-layout override removed */
 .results-layout {
   display: grid;
   gap: 16px;
@@ -481,6 +519,90 @@ body.light-mode {
 
 .copy-btn:hover {
   background: #d1d5db;
+}
+
+.udemy-panel {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  max-width: 360px;
+  width: 90vw;
+  max-height: 320px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+  padding: 10px 12px;
+  z-index: 50;
+}
+
+.udemy-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.udemy-panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.udemy-panel-title i {
+  color: #16a34a;
+}
+
+.udemy-panel-close {
+  border: none;
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  color: #374151;
+  cursor: pointer;
+}
+
+.udemy-panel-close:hover {
+  background: #d1d5db;
+}
+
+.udemy-panel-status {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.udemy-panel-list {
+  margin: 0;
+  padding-left: 16px;
+  max-height: 230px;
+  overflow-y: auto;
+  font-size: 0.88rem;
+}
+
+.udemy-panel-item {
+  margin-bottom: 4px;
+}
+
+.udemy-panel-link {
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.udemy-panel-link:hover {
+  text-decoration: underline;
+}
+
+.udemy-panel-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
 }
 
 .merge-box {
@@ -897,7 +1019,8 @@ body.light-mode {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .results-layout {
+  /* .results-layout override removed */
+.results-layout {
     /* grid-template-columns: 2fr 1fr; */
     align-items: flex-start;
   }

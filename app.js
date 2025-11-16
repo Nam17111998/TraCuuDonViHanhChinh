@@ -50,8 +50,117 @@ document.addEventListener("DOMContentLoaded", () => {
   const donateClose = document.getElementById("donateClose");
   const themeToggle = document.getElementById("themeToggle");
   const themeIcon = document.getElementById("themeIcon");
+  const headerEl = document.querySelector(".header");
 
   initTheme(themeToggle, themeIcon);
+
+  if (headerEl) {
+    const couponToggle = document.createElement("button");
+    couponToggle.id = "couponToggle";
+    couponToggle.className = "coupon-toggle";
+    couponToggle.type = "button";
+    couponToggle.title = "Các khoá học Udemy";
+    couponToggle.setAttribute(
+      "aria-label",
+      "Các khoá học Udemy"
+    );
+    couponToggle.innerHTML =
+      '<i class="fa-solid fa-graduation-cap"></i><span class="coupon-label">Các khoá học Udemy</span>';
+    headerEl.appendChild(couponToggle);
+
+    const udemyPanel = document.createElement("div");
+    udemyPanel.id = "udemyPanel";
+    udemyPanel.className = "udemy-panel";
+    udemyPanel.hidden = true;
+    udemyPanel.innerHTML =
+      '<div class="udemy-panel-header">' +
+      '  <div class="udemy-panel-title">' +
+      '    <i class="fa-solid fa-graduation-cap"></i>' +
+      "    Udemy free coupon" +
+      "  </div>" +
+      '  <button id="udemyPanelClose" type="button" class="udemy-panel-close" aria-label="Đóng danh sách khoá học">' +
+      '    <i class="fa-solid fa-xmark"></i>' +
+      "  </button>" +
+      "</div>" +
+      '<p id="udemyPanelStatus" class="udemy-panel-status"></p>' +
+      '<ul id="udemyPanelList" class="udemy-panel-list"></ul>';
+    document.body.appendChild(udemyPanel);
+
+    const udemyStatus = document.getElementById("udemyPanelStatus");
+    const udemyList = document.getElementById("udemyPanelList");
+    const udemyClose = document.getElementById("udemyPanelClose");
+
+    couponToggle.addEventListener("click", async () => {
+      if (!udemyPanel || !udemyStatus || !udemyList) return;
+
+      if (!udemyPanel.hidden) {
+        udemyPanel.hidden = true;
+        return;
+      }
+
+      udemyPanel.hidden = false;
+      udemyStatus.textContent =
+        "Đang tải danh sách khoá học Udemy free...";
+      udemyList.innerHTML = "";
+
+      try {
+        if (!isUdemyLoaded) {
+          const res = await fetch(UDEMY_API_URL);
+          if (!res.ok) {
+            throw new Error("Không thể tải dữ liệu khoá học.");
+          }
+          const data = await res.json();
+          const raw = Array.isArray(data.courses) ? data.courses : [];
+
+          udemyCourses = raw.map((item) => {
+            const url = String(item.url || "").trim();
+            let title = url;
+            const m = url.match(/\/course\/([^/?]+)/);
+            if (m && m[1]) {
+              title = decodeURIComponent(m[1]).replace(/-/g, " ");
+            }
+            return {
+              url,
+              coupon: String(item.coupon_code || "").trim(),
+              title,
+            };
+          });
+
+          isUdemyLoaded = true;
+        }
+
+        renderUdemyCourses(udemyCourses, udemyStatus, udemyList);
+      } catch (error) {
+        console.error("Lỗi tải Udemy free:", error);
+        udemyStatus.textContent =
+          "Không thể tải danh sách khoá học Udemy free. Vui lòng thử lại sau.";
+      }
+    });
+
+    if (udemyClose) {
+      udemyClose.addEventListener("click", () => {
+        udemyPanel.hidden = true;
+      });
+    }
+
+    const udemyAlias = document.createElement("div");
+    udemyAlias.className = "udemy-alias";
+    udemyAlias.textContent = "Đường dẫn ảo: https://nmn.udemy.com";
+    headerEl.appendChild(udemyAlias);
+
+    couponToggle.addEventListener(
+      "click",
+      (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.open(
+          "https://nam17111998.github.io/Udemy_free/udemy_free/",
+          "_blank"
+        );
+      },
+      true
+    );
+  }
 
   loadMainData()
     .then(() => {
@@ -1070,4 +1179,40 @@ async function loadProvinceIntro(provinceName) {
     console.error("Loi tai gioi thieu Wikipedia:", error);
     introEl.textContent = "Không tải được giới thiệu";
   }
+}
+
+function renderUdemyCourses(courses, statusEl, listEl) {
+  if (!statusEl || !listEl) return;
+
+  listEl.innerHTML = "";
+
+  if (!courses || !courses.length) {
+    statusEl.textContent = "Hiện chưa có khoá học miễn phí nào.";
+    return;
+  }
+
+  statusEl.textContent =
+    "Có " + courses.length + " khoá học Udemy đang free coupon:";
+
+  courses.forEach((c) => {
+    const li = document.createElement("li");
+    li.className = "udemy-panel-item";
+
+    const a = document.createElement("a");
+    a.href = c.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.className = "udemy-panel-link";
+    a.textContent = c.title || c.url;
+
+    const meta = document.createElement("div");
+    meta.className = "udemy-panel-meta";
+    meta.textContent = c.coupon
+      ? "Coupon: " + c.coupon
+      : "Free coupon (không có mã riêng)";
+
+    li.appendChild(a);
+    li.appendChild(meta);
+    listEl.appendChild(li);
+  });
 }
