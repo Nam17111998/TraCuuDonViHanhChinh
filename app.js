@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const udemyAlias = document.createElement("div");
     udemyAlias.className = "udemy-alias";
-    udemyAlias.textContent = "Đường dẫn ảo: https://nmn.udemy.com";
+    udemyAlias.textContent = "";
     headerEl.appendChild(udemyAlias);
 
     couponToggle.addEventListener(
@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (statusMessage) {
         statusMessage.textContent =
-          "Nhập từ khóa để bắt đầu tra cứu (không phân biệt hoa/thường, dấu).";
+          "";
       }
     })
     .catch((error) => {

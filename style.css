@@ -129,6 +129,10 @@ body.light-mode {
 }
 
 .coupon-label {
+  display: none;
+}
+
+.coupon-label {
   font-size: 0.85rem;
   font-weight: 500;
 }
