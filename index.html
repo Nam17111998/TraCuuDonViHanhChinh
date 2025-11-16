@@ -153,6 +153,31 @@
             <ul id="holidayList" class="holiday-list" hidden></ul>
           </div>
 
+          <div class="nearby-box">
+            <div class="nearby-title">
+              <i class="fa-solid fa-location-crosshairs"></i>
+              Tìm đơn vị hành chính cấp 2 gần tôi
+            </div>
+            <button
+              id="findNearbyDistrictBtn"
+              type="button"
+              class="copy-btn"
+              aria-label="Tìm đơn vị hành chính cấp 2 gần vị trí hiện tại"
+            >
+              Tìm gần tôi
+            </button>
+            <!-- <button
+              id="findProvinceDistrictsBtn"
+              type="button"
+              class="copy-btn"
+              aria-label="Li���t k��? UBND c���p huy���n/qu��-n trong t��%nh/ThA�nh vA� khu v��?c �`ang ch��?n"
+            >
+              UBND trong tỉnh thành phố
+            </button> -->
+            <p id="nearbyStatus" class="nearby-status"></p>
+            <ul id="nearbyDistrictList" class="nearby-list"></ul>
+          </div>
+
           <div class="wiki-box">
             <div class="wiki-title">
               <i class="fa-brands fa-wikipedia-w"></i>
@@ -327,5 +352,6 @@
     crossorigin=""
   ></script>
   <script src="admin-center.js"></script>
+  <script src="nearby-admin.js"></script>
 </body>
 </html>

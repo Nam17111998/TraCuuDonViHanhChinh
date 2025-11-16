@@ -522,6 +522,62 @@ body.light-mode {
   color: var(--color-text-muted);
 }
 
+.nearby-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.nearby-title {
+  font-weight: 600;
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nearby-status {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.nearby-list {
+  margin: 6px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.nearby-item {
+  padding: 6px 0;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.nearby-item-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.nearby-item-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.nearby-item-meta {
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.nearby-item-actions {
+  margin-top: 4px;
+  display: flex;
+  gap: 6px;
+}
+
 .map-box {
   margin-top: 12px;
 }
